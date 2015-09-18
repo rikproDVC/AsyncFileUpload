@@ -1,0 +1,18 @@
+﻿@model AspNet.AzureStorage.Sample.ViewModels.FileUploadViewModel
+
+@{
+    ViewBag.Title = "Upload";
+}
+
+<h2>Upload</h2>
+
+<form method="POST" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+    @Html.TextBoxFor(m => m.UploadFile, new { id = "uploadfield", type = "file" })
+
+    <input type="submit" name="save" value="Verstuur" id="uploadsubmit">
+</form>
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>

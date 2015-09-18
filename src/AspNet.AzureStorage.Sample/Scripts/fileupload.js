@@ -1,12 +1,30 @@
 ﻿var data = new FormData();
-var fileArr = [];
+var fileObj = new Object;
+
+var deleteFileFromList = function(element) {
+    var fileId = $(element).parent('li').attr('id');
+    $("#" + fileId).slideUp();
+    delete fileObj[fileId];
+}
 
 $('#uploadfield').on('change', function (e) {
     var files = e.target.files;
     if (files.length > 0) {
         if (window.FormData !== undefined) {
             for (var x = 0; x < files.length; x++) {
-                fileArr.push(files[x]);
+                //fileArr.push(files[x]);
+                //var last = fileArr[filearr.length - 1];
+                //$('#Filelist').append("<li id='file-" + last.name + "'>" + files[x].name + "<button id='remove'>X</button>");
+                //$("#remove").click(function () {
+                //    $("#filename").slideUp();
+                //});
+
+                var fileKey = "file-" + Object.keys(fileObj).length
+
+                // Add the file to object as property
+                fileObj[fileKey] = files[x];
+
+                $('#Filelist').append("<li id='" + fileKey + "'>" + files[x].name + "<button class='remove' onclick='deleteFileFromList(this)'>X</button></li>");
             }
             $(e.target).parent('form').trigger('reset');
         } else {
@@ -15,11 +33,15 @@ $('#uploadfield').on('change', function (e) {
     }
 });
 
+
 $('#uploadsubmit').on('click', function (e) {
     event.preventDefault();
 
-    for (var x = 0; x < fileArr.length; x++) {
-        data.append(fileArr[x].name, fileArr[x]);
+    for (var key in fileObj) {
+        if (fileObj.hasOwnProperty(key)) {
+            data.append(fileObj[key].name, fileObj[key]);
+            delete fileObj[key];
+        }
     }
 
     $.ajax({
@@ -38,5 +60,4 @@ $('#uploadsubmit').on('click', function (e) {
             console.log(err);
         }
     });
-    filearr = [];
 });

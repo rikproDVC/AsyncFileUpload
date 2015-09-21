@@ -1,9 +1,10 @@
 ﻿var data = new FormData();
 var fileObj = new Object;
+var listCount = 0;
 
 var deleteFileFromList = function(element) {
     var fileId = $(element).parent('li').attr('id');
-    $("#" + fileId).slideUp();
+    $("#" + fileId).remove();
     delete fileObj[fileId];
 }
 
@@ -12,23 +13,20 @@ $('#uploadfield').on('change', function (e) {
     if (files.length > 0) {
         if (window.FormData !== undefined) {
             for (var x = 0; x < files.length; x++) {
-                //fileArr.push(files[x]);
-                //var last = fileArr[filearr.length - 1];
-                //$('#Filelist').append("<li id='file-" + last.name + "'>" + files[x].name + "<button id='remove'>X</button>");
-                //$("#remove").click(function () {
-                //    $("#filename").slideUp();
-                //});
-
-                var fileKey = "file-" + Object.keys(fileObj).length
+                var fileKey = "file-" + listCount;
+                listCount++;
 
                 // Add the file to object as property
                 fileObj[fileKey] = files[x];
 
-                $('#Filelist').append("<li id='" + fileKey + "'>" + files[x].name + "<button class='remove' onclick='deleteFileFromList(this)'>X</button></li>");
+                $('<li></li>', {
+                    id: fileKey
+                }).html(files[x].name + '<button class="remove" onclick="deleteFileFromList(this)">X</button>')
+                    .appendTo('#Filelist');
             }
             $(e.target).parent('form').trigger('reset');
         } else {
-            alert("This browser doesn't support HTML5 file uploads!");
+            alert('This browser doesn\'t support HTML5 file uploads!');
         }
     }
 });
@@ -40,7 +38,6 @@ $('#uploadsubmit').on('click', function (e) {
     for (var key in fileObj) {
         if (fileObj.hasOwnProperty(key)) {
             data.append(fileObj[key].name, fileObj[key]);
-            delete fileObj[key];
         }
     }
 
@@ -52,6 +49,8 @@ $('#uploadsubmit').on('click', function (e) {
         data: data,
         success: function (result) {
             console.log(result);
+            fileObj = new Object;
+            $('#Filelist').html("");
         },
         error: function (xhr, status, p3, p4) {
             var err = "Error " + " " + status + " " + p3 + " " + p4;

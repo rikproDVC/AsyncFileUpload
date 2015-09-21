@@ -8,21 +8,33 @@ var deleteFileFromList = function(element) {
     delete fileObj[fileId];
 }
 
+var compareFiles = function(file1, file2) {
+    return file1.size == file2.size && file1.lastModified == file2.lastModified;
+}
+
 $('#uploadfield').on('change', function (e) {
     var files = e.target.files;
     if (files.length > 0) {
         if (window.FormData !== undefined) {
             for (var x = 0; x < files.length; x++) {
-                var fileKey = "file-" + listCount;
-                listCount++;
+                var counter = 0;
+                for (var key in fileObj) {
+                    if (fileObj.hasOwnProperty(key) && compareFiles(fileObj[key], files[x])) {
+                        counter++;
+                    }
+                }
+                if (counter < 1) {
+                    var fileKey = "file-" + listCount;
+                    listCount++;
 
-                // Add the file to object as property
-                fileObj[fileKey] = files[x];
+                    // Add the file to object as property
+                    fileObj[fileKey] = files[x];
 
-                $('<li></li>', {
-                    id: fileKey
-                }).html(files[x].name + '<button class="remove" onclick="deleteFileFromList(this)">X</button>')
-                    .appendTo('#Filelist');
+                    $('<li></li>', {
+                        id: fileKey
+                    }).html(files[x].name + '<button class="remove" onclick="deleteFileFromList(this)">X</button>')
+                        .appendTo('#Filelist');
+                }    
             }
             $(e.target).parent('form').trigger('reset');
         } else {

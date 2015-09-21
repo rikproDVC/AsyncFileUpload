@@ -8,8 +8,11 @@
 
 <form method="POST" enctype="multipart/form-data">
     @Html.AntiForgeryToken()
-    @Html.TextBoxFor(m => m.UploadFile, new { id = "uploadfield", type = "file" })
-
+    <button class="uploadwrapper">
+        Voeg afbeelding toe
+        @Html.TextBoxFor(m => m.UploadFile, new { id = "uploadfield", type = "file" })
+    </button>
+    
     <input type="submit" name="save" value="Verstuur" id="uploadsubmit">
 </form>
 

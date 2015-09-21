@@ -7,6 +7,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Threading.Tasks;
 using System.Web;
 
 namespace AspNet.AzureStorage.Sample
@@ -22,7 +23,7 @@ namespace AspNet.AzureStorage.Sample
             Container = container;
         }
 
-        public Models.File Upload()
+        public async Task<Models.File> Upload()
         {
             // Set the file stream postion to the start of the stream
             File.InputStream.Position = 0;
@@ -56,24 +57,24 @@ namespace AspNet.AzureStorage.Sample
                 ContentType = File.ContentType,
                 Key = key,
                 Container = Container,
-                Md5 = hash
+                Md5 = hash  
             };
 
             _ctx.Files.Add(fileEntity);
-            _ctx.SaveChanges();
+            await _ctx.SaveChangesAsync();
 
             // Upload original file
             var block = _container.GetBlockBlobReference(fileEntity.Key);
             block.Properties.ContentType = fileEntity.ContentType;
-            block.UploadFromStream(File.InputStream);
+            await block.UploadFromStreamAsync(File.InputStream);
 
             // Upload resized image versions
-            UploadImageResized(fileEntity);
+            await UploadImageResized(fileEntity);
 
             return fileEntity;
         }
 
-        private void UploadImageResized(Models.File file)
+        private async Task UploadImageResized(Models.File file)
         {
             using (var imageStream = File.InputStream)
             {
@@ -99,7 +100,7 @@ namespace AspNet.AzureStorage.Sample
                         // Upload the file to the Blob Storage
                         var block = _container.GetBlockBlobReference(key);
                         block.Properties.ContentType = file.ContentType;
-                        block.UploadFromStream(ImageHelper.ResizeImage(stream, Convert.ToInt32(size)));
+                        await block.UploadFromStreamAsync(ImageHelper.ResizeImage(stream, Convert.ToInt32(size)));
                     }
                 }
             }

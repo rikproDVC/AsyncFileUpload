@@ -1,10 +1,6 @@
 ﻿using AspNet.AzureStorage.Sample.Models;
 using AspNet.AzureStorage.Sample.ViewModels;
-using Microsoft.Azure;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Blob;
 using System;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -29,20 +25,6 @@ namespace AspNet.AzureStorage.Sample.Controllers
         }
 
         [HttpPost]
-        public ActionResult Upload(FileUploadViewModel viewModel)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View();
-            }
-
-            var uploader = new FileUploader(viewModel.UploadFile, "files");
-            uploader.Upload();
-
-            return RedirectToAction("Index");
-        }
-
-        [HttpPost]
         public async Task<JsonResult> UploadAjax()
         {
             try
@@ -52,7 +34,8 @@ namespace AspNet.AzureStorage.Sample.Controllers
                     var fileContent = Request.Files[file];
                     if (fileContent != null && fileContent.ContentLength > 0)
                     {
-
+                        var uploader = new FileUploader(fileContent, "files");
+                        var uploadedFile = await uploader.Upload();
                     }
                 }
             }

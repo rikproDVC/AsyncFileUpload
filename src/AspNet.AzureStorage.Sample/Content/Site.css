@@ -22,3 +22,21 @@ select,
 textarea {
     max-width: 280px;
 }
+
+.uploadwrapper {
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+}
+
+#uploadfield {
+    cursor: pointer;
+    height: 100%;
+    position:absolute;
+    top: 0;
+    right: 0;
+    /*This makes the button huge so that it can be clicked on*/
+    font-size:50px;
+    /*Opacity settings for all browsers*/
+    opacity: 0;
+}

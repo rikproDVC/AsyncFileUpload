@@ -40,3 +40,8 @@ textarea {
     /*Opacity settings for all browsers*/
     opacity: 0;
 }
+
+.imageUploadPreview {
+    max-height: 200px;
+    max-width: 200px;
+}

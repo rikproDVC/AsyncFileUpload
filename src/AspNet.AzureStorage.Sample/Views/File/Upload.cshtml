@@ -10,7 +10,7 @@
     @Html.AntiForgeryToken()
     <button class="uploadwrapper" type="button">
         Voeg afbeelding toe
-        @Html.TextBoxFor(m => m.UploadFile, new { id = "uploadfield", type = "file" })
+        @Html.TextBoxFor(m => m.UploadFile, new { id = "uploadfield", type = "file", multiple = "multiple"})
     </button>
     
     <input type="submit" name="save" value="Verstuur" id="uploadsubmit">
@@ -19,6 +19,10 @@
 <ul id="Filelist">
     
 </ul>
+
+<table>
+
+</table>
 
 <div>
     @Html.ActionLink("Back to List", "Index")

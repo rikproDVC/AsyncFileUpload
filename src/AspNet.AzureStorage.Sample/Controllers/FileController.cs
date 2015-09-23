@@ -19,13 +19,8 @@ namespace AspNet.AzureStorage.Sample.Controllers
             return View(files);
         }
 
-        public ActionResult Upload()
-        {
-            return View(new FileUploadViewModel());
-        }
-
         [HttpPost]
-        public async Task<JsonResult> UploadAjax()
+        public async Task<JsonResult> Upload()
         {
             try
             {

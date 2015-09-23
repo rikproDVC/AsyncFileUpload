@@ -2,14 +2,14 @@
 var fileObj = new Object;
 var listCount = 0;
 
-$('#uploadfield').on('change', function (e) {
+$('form#uploadfiles .uploadwrapper input[type=file]').on('change', function (e) {
     var files = e.target.files;
     if (files.length > 0) {
         processFileSelection(e, files)
     }
 });
 
-$('#uploadsubmit').on('click', function (e) {
+$('form#uploadfiles input[type=submit]').on('click', function (e) {
     // Prevent sending the form
     event.preventDefault();
 
@@ -23,7 +23,7 @@ $('#uploadsubmit').on('click', function (e) {
     // Send the ajax call
     $.ajax({
         type: "POST",
-        url: '/File/UploadAjax',
+        url: '/File/Upload/',
         contentType: false,
         processData: false,
         data: data,
@@ -31,7 +31,7 @@ $('#uploadsubmit').on('click', function (e) {
             console.log(result);
             // Clear the file object and file list
             fileObj = new Object;
-            $('table').html("");
+            $('#uploadqueue').html("");
         },
         error: function (xhr, status, p3, p4) {
             var err = "Error " + " " + status + " " + p3 + " " + p4;
@@ -42,17 +42,17 @@ $('#uploadsubmit').on('click', function (e) {
     });
 });
 
-var deleteFileFromList = function(element) {
+function deleteFileFromList(element) {
     var fileId = $(element).parents('tr').attr('id');
     $("#" + fileId).remove();
     delete fileObj[fileId];
 }
 
-var compareFilesForDuplicate = function(file1, file2) {
+function compareFilesForDuplicate(file1, file2) {
     return file1.size == file2.size && file1.lastModified == file2.lastModified;
 }
 
-var processFileSelection = function (event, files) {
+function processFileSelection(event, files) {
     if (window.FormData !== undefined) {
         for (var x = 0; x < files.length; x++) {
             var counter = 0;
@@ -65,22 +65,23 @@ var processFileSelection = function (event, files) {
 
             // Only process the files when no duplicates are found
             if (counter < 1) {
+                // Instead of fancy counting systems, simply increase a variable every file that's added for simplicity.
                 var fileKey = "file-" + listCount;
                 listCount++;
 
                 // Add the file to object as property
                 fileObj[fileKey] = files[x];
 
-                // Generate new table row for file
+                // Generate new table row for the added file
                 var row = $('<tr></tr>', {
                     id: fileKey
                     });
 
-                $('<td></td>').html('<img class="imageUploadPreview" src="' + URL.createObjectURL(files[x]) + '">').appendTo(row);
+                $('<td></td>').html('<img src="' + URL.createObjectURL(files[x]) + '">').appendTo(row);
                 $('<td></td>').html(files[x].name).appendTo(row);
-                $('<td></td>').html('<button class="remove" onclick="deleteFileFromList(this)">X</button>').appendTo(row);
+                $('<td></td>').html('<button onclick="deleteFileFromList(this)">X</button>').appendTo(row);
 
-                row.appendTo('table');
+                row.appendTo('#uploadqueue');
             }
         }
         // Reset the form field so the upload button in empty again
@@ -89,4 +90,3 @@ var processFileSelection = function (event, files) {
         alert('This browser doesn\'t support HTML5 file uploads!');
     }
 }
-

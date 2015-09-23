@@ -137,19 +137,13 @@ namespace AspNet.AzureStorage.Sample
         public static string Thumbnail { get { return "thumb/150"; } }
         public static string InPage { get { return "inpage/800"; } }
         public static string FullSize { get { return "fullsize/1024"; } }
+        public static List<string> List { get { return _list; } }
 
-        public static List<string> List
+        private static List<string> _list = new List<string>
         {
-            get
-            {
-                var list = new List<string>
-                {
-                    Thumbnail,
-                    InPage,
-                    FullSize
-                };
-                return list;
-            }
-        }
+            Thumbnail,
+            InPage,
+            FullSize
+        };
     }
 }

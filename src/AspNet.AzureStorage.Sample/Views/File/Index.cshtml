@@ -6,9 +6,19 @@
 
 <h2>Index</h2>
 
-<p>
-    @Html.ActionLink("Upload new file", "Upload")
-</p>
+<form id="uploadfiles" method="POST" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+    <div class="uploadwrapper">
+        <span>Add Files</span>
+        <input type="file" accept="image/*" multiple="multiple" />
+    </div>
+    <input type="submit" name="save" value="Verstuur">
+</form>
+
+<table id="uploadqueue">
+
+</table>
+
 <table class="table">
     <tr>
         <th></th>
